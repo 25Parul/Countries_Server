@@ -129,6 +129,39 @@ app.get("/", (req, res) => {
   res.send(countries);
 });
 
+app.get("/random", (req, res) => {
+  let random = Math.floor(Math.random() * countries.length);
+  res.send(countries[random]);
+});
+
+app.get("/search/:string", (req, res) => {
+  const searchString = req.params.string.toLowerCase();
+  const matchingCountry = countries.find((country) =>
+    country.countryName.toLowerCase().includes(searchString)
+  );
+
+  if (matchingCountry) {
+    res.json(matchingCountry);
+  } else {
+    res.status(404).json({ error: "Country not found" });
+  }
+});
+
+app.get("/countries/language/:language", (req, res) => {
+  const language = req.params.language.toLowerCase();
+  const matchingCountries = countries.filter((country) =>
+    country.language.toLowerCase().includes(language)
+  );
+
+  if (matchingCountries.length > 0) {
+    res.json(matchingCountries);
+  } else {
+    res
+      .status(404)
+      .json({ error: "No countries found with the specified language" });
+  }
+});
+
 app.listen(port, () => {
-  console.log("Listenong on port", port);
+  console.log("Listening on port", port);
 });
